@@ -13,7 +13,7 @@ steps:
     git config --global user.email "$(BUILD_REQUESTEDFOREMAIL)"
 
     # Clone the Azure DevOps repository
-    git clone --mirror https://dev.azure.com/YourOrganization/EmojiDetector-SE-Project
+    git clone --mirror https://dev.azure.com/TeamTemp/EmojiDetector-SE-Project
 
     cd EmojiDetector-SE-Project.git
 
