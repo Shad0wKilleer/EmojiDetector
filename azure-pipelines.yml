@@ -1,0 +1,39 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+    echo "Configuring Git for synchronization..."
+
+    # Set up Git user information
+    git config --global user.name "$(user_name)"
+    git config --global user.email "$(user_email)"
+
+    # Clone the Azure DevOps repository
+    git clone https://dev.azure.com/$(organization_name)/$(project_name).git
+    cd $(project_name)
+
+    # Add GitHub as a remote repository
+    git remote add github https://github.com/$(user_name)/$(project_name).git
+
+    # Fetch the latest changes
+    git fetch origin
+    git fetch github
+
+    # Ensure we are on the correct branch
+    git checkout main
+
+    # Pull latest changes to prevent conflicts
+    git pull --rebase origin main || echo "No new changes from Azure DevOps"
+    git pull --rebase github main || echo "No new changes from GitHub"
+
+    # Push changes from Azure DevOps to GitHub
+    git push github main --follow-tags
+
+    # Push changes from GitHub to Azure DevOps
+    git push origin main --follow-tags
+
+  displayName: 'Synchronize Azure DevOps and GitHub Repositories'
