@@ -6,6 +6,8 @@ pool:
 
 steps:
 - script: |
+    git rebase --abort
+    
     set -x  # Enable debugging to print commands before execution
 
     echo "=== Configuring Git for synchronization ==="
