@@ -1,3 +1,2 @@
 # EmojiDetector
-This is SE-Project Repo
-Nothing more. 
+I HATE EVEYONE. :)
