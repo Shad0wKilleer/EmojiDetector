@@ -6,34 +6,43 @@ pool:
 
 steps:
 - script: |
-    echo "Configuring Git for synchronization..."
+    set -x  # Enable debugging to print commands before execution
+
+    echo "=== Configuring Git for synchronization ==="
 
     # Set up Git user information
     git config --global user.name "$(user_name)"
     git config --global user.email "$(user_email)"
 
-    # Clone the Azure DevOps repository (Authenticate using PAT)
-    git clone https://$(AZURE_PAT)@dev.azure.com/TeamTemp/EmojiDetector/_git/EmojiDetector
+    echo "=== Validating Azure DevOps PAT ==="
+    curl -u :$(AZURE_PAT) -X GET "https://dev.azure.com/TeamTemp/_apis/projects?api-version=6.0"
+
+    echo "=== Cloning Azure DevOps Repository ==="
+    git clone "https://$(AZURE_PAT)@dev.azure.com/TeamTemp/EmojiDetector/_git/EmojiDetector" || { echo "Failed to clone Azure DevOps repo"; exit 1; }
+
     cd EmojiDetector
 
-    # Add GitHub as a remote repository (Authenticate using PAT)
-    git remote add github https://$(GH_PAT)@github.com/Shad0wKilleer/EmojiDetector.git
+    echo "=== Adding GitHub as a Remote Repository ==="
+    git remote add github "https://x-access-token:$(GH_PAT)@github.com/Shad0wKilleer/EmojiDetector.git"
 
-    # Fetch the latest changes
-    git fetch --all
+    echo "=== Fetching All Remotes ==="
+    git fetch --all || { echo "Git fetch failed"; exit 1; }
 
-    # Ensure we are on the correct branch
-    git checkout -B main origin/main
+    echo "=== Checking Out Main Branch ==="
+    git checkout -B main origin/main || { echo "Git checkout failed"; exit 1; }
 
-    # Pull latest changes to prevent conflicts
+    echo "=== Pulling Latest Changes ==="
     git pull --rebase origin main || echo "No new changes from Azure DevOps"
     git pull --rebase github main || echo "No new changes from GitHub"
 
-    # Push changes from Azure DevOps to GitHub
-    git push github main --follow-tags
+    echo "=== Pushing to GitHub ==="
+    git push github main --follow-tags || { echo "GitHub push failed"; exit 1; }
 
-    # Push changes from GitHub to Azure DevOps
-    git push origin main --follow-tags
+    echo "=== Pushing to Azure DevOps ==="
+    git push origin main --follow-tags || { echo "Azure push failed"; exit 1; }
+
+    echo "=== Sync Complete! ==="
+
   displayName: 'Synchronize Azure DevOps and GitHub Repositories'
   env:
     AZURE_PAT: $(AZURE_PAT)
