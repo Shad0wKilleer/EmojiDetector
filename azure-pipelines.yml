@@ -1,0 +1,57 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+    git rebase --abort
+    
+    set -x  # Enable debugging to print commands before execution
+
+    echo "=== Configuring Git for synchronization ==="
+
+    # Set up Git user information
+    git config --global user.name "$(user_name)"
+    git config --global user.email "$(user_email)"
+
+    echo "=== Validating Azure DevOps PAT ==="
+    curl -u :$(AZURE_PAT) -X GET "https://dev.azure.com/TeamTemp/_apis/projects?api-version=6.0"
+
+    echo "=== Cloning Azure DevOps Repository ==="
+    git clone "https://$(AZURE_PAT)@dev.azure.com/TeamTemp/EmojiDetector/_git/EmojiDetector" || { echo "Failed to clone Azure DevOps repo"; exit 1; }
+
+    cd EmojiDetector
+
+    echo "=== Adding GitHub as a Remote Repository ==="
+    git remote add github "https://$(GH_PAT)@github.com/Shad0wKilleer/EmojiDetector.git"
+
+    echo "=== Fetching All Remotes ==="
+    git fetch --all || { echo "Git fetch failed"; exit 1; }
+
+    echo "=== Checking Out Main Branch ==="
+    git checkout -B main origin/main || { echo "Git checkout failed"; exit 1; }
+
+    echo "=== Pulling Latest Changes from GitHub ==="
+    git pull --rebase github main || { echo "No new changes from GitHub"; }
+
+    echo "=== Resolving Conflicts by Favoring Azure DevOps Changes ==="
+    git rebase --strategy-option=ours || {
+      echo "Rebase failed. Attempting to abort and clean up."
+      git rebase --abort
+      rm -rf .git/rebase-merge
+      exit 1
+    }
+
+    echo "=== Pushing Resolved Changes to GitHub ==="
+    git push github main --force-with-lease || { echo "GitHub push failed"; exit 1; }
+
+    echo "=== Pushing Resolved Changes to Azure DevOps ==="
+    git push origin main --force-with-lease || { echo "Azure push failed"; exit 1; }
+
+    echo "=== Sync Complete! ==="
+  displayName: 'Synchronize Azure DevOps and GitHub Repositories'
+  env:
+    AZURE_PAT: $(AZURE_PAT)
+    GH_PAT: $(GH_PAT)
