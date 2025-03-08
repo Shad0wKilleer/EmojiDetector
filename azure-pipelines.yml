@@ -34,5 +34,7 @@ steps:
 
     # Push changes from GitHub to Azure DevOps
     git push origin main --follow-tags
-
   displayName: 'Synchronize Azure DevOps and GitHub Repositories'
+  env:
+    AZURE_PAT: $(AZURE_PAT)
+    GH_PAT: $(GH_PAT)
