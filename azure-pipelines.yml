@@ -1,5 +1,12 @@
 trigger:
-- main
+  branches:
+    include:
+      - main  # Runs the pipeline on every push to the 'main' branch
+
+pr:
+  branches:
+    include:
+      - main  # Runs the pipeline on pull requests targeting 'main'
 
 pool:
   vmImage: ubuntu-latest
