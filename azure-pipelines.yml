@@ -23,7 +23,7 @@ steps:
     cd EmojiDetector
 
     echo "=== Adding GitHub as a Remote Repository ==="
-    git remote add github "https://x-access-token:$(GH_PAT)@github.com/Shad0wKilleer/EmojiDetector.git"
+    git remote add github "https://$(GH_PAT)@github.com/Shad0wKilleer/EmojiDetector.git"
 
     echo "=== Fetching All Remotes ==="
     git fetch --all || { echo "Git fetch failed"; exit 1; }
@@ -31,18 +31,19 @@ steps:
     echo "=== Checking Out Main Branch ==="
     git checkout -B main origin/main || { echo "Git checkout failed"; exit 1; }
 
-    echo "=== Pulling Latest Changes ==="
-    git pull --rebase origin main || echo "No new changes from Azure DevOps"
-    git pull --rebase github main || echo "No new changes from GitHub"
+    echo "=== Pulling Latest Changes from GitHub ==="
+    git pull --rebase github main || { echo "No new changes from GitHub"; }
 
-    echo "=== Pushing to GitHub ==="
-    git push github main --follow-tags || { echo "GitHub push failed"; exit 1; }
+    echo "=== Resolving Conflicts by Favoring Azure DevOps Changes ==="
+    git rebase --strategy-option=ours || { echo "Rebase failed"; exit 1; }
 
-    echo "=== Pushing to Azure DevOps ==="
-    git push origin main --follow-tags || { echo "Azure push failed"; exit 1; }
+    echo "=== Pushing Resolved Changes to GitHub ==="
+    git push github main --force-with-lease || { echo "GitHub push failed"; exit 1; }
+
+    echo "=== Pushing Resolved Changes to Azure DevOps ==="
+    git push origin main --force-with-lease || { echo "Azure push failed"; exit 1; }
 
     echo "=== Sync Complete! ==="
-
   displayName: 'Synchronize Azure DevOps and GitHub Repositories'
   env:
     AZURE_PAT: $(AZURE_PAT)
