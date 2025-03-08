@@ -1,2 +1,3 @@
 # EmojiDetector
 I HATE EVEYONE. :)
+But sometimes I don't hate everyone....
