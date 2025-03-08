@@ -35,7 +35,12 @@ steps:
     git pull --rebase github main || { echo "No new changes from GitHub"; }
 
     echo "=== Resolving Conflicts by Favoring Azure DevOps Changes ==="
-    git rebase --strategy-option=ours || { echo "Rebase failed"; exit 1; }
+    git rebase --strategy-option=ours || {
+      echo "Rebase failed. Attempting to abort and clean up."
+      git rebase --abort
+      rm -rf .git/rebase-merge
+      exit 1
+    }
 
     echo "=== Pushing Resolved Changes to GitHub ==="
     git push github main --force-with-lease || { echo "GitHub push failed"; exit 1; }
