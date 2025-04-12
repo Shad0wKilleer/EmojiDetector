@@ -1,60 +1,52 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import pyautogui
 import time
+import os
+import pyperclip
+import webbrowser
 
-# Initialize WebDriver (Make sure you have the correct WebDriver installed)
-driver = webdriver.Chrome()
+# Define paths
+txt_file_path = r"C:\Users\bsame\OneDrive\Desktop\SE\test.txt"
+screenshot_path = r"C:\Users\bsame\OneDrive\Desktop\SE\Screenshots"
+label_file = os.path.join(screenshot_path, 'labels.txt')
+# Create folder if it doesn't exist
+if not os.path.exists(screenshot_path):
+    os.makedirs(screenshot_path)
 
-# Open WhatsApp Web
-driver.get("https://web.whatsapp.com/")
-wait = WebDriverWait(driver, 20)
+# Define recipient phone number (Use country code, no spaces or dashes)
+target_number = "+923001126003"  # Replace with actual phone number
 
-# Wait for QR code scan
-input("📌 Scan the QR Code and press ENTER...")
+# Open WhatsApp Web with the target number
+whatsapp_url = f"https://web.whatsapp.com/send?phone={target_number}"
+webbrowser.open(whatsapp_url)  # Opens in the default web browser
+time.sleep(15)  # Wait for WhatsApp Web to load
 
-# Search for a contact and open chat
-contact_name = "Me (You)"
-search_box = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@contenteditable='true']")))
-search_box.click()
-search_box.send_keys(contact_name)
-time.sleep(2)
-search_box.send_keys(Keys.ENTER)
+# Load emojis and their Unicode values from the TXT file
+emoji_unicode_mapping = []
+with open(txt_file_path, "r", encoding="utf-8") as file:
+    for line in file:
+        emoji, unicode_value = line.strip().split(": ")
+        emoji_unicode_mapping.append((emoji, unicode_value))
 
-# Open Emoji Panel
-emoji_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Emoji']")))
-emoji_button.click()
-time.sleep(2)
+# Open file for writing labels
+with open(label_file, 'w', encoding='utf-8') as f:
+    for idx, (emoji, unicode_value) in enumerate(emoji_unicode_mapping, start=1):
+        # Copy emoji to clipboard
+        pyperclip.copy(emoji)
+        time.sleep(1)
 
-# Get the emoji elements
-emojis = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(@data-emoji, '')]")))
+        # Click message input box (Manually click once before running if needed)
+        pyautogui.hotkey("ctrl", "v")  # Paste emoji
+        time.sleep(1)
 
-# Iterate through emojis
-for emoji in emojis:
-    try:
-        # Click the emoji
-        emoji.click()
-        time.sleep(0.5)  # Allow time for the emoji to appear in the input box
+        # Press enter to send
+        pyautogui.press("enter")
+        time.sleep(2)  # Wait for the message to send
 
-        # Check if a variant selector appears
-        try:
-            variant = WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'variant-selector')]//span")))
-            variant.click()
-        except:
-            pass  # No variant selector means the emoji was added directly
+        # Take screenshot
+        screenshot_file = os.path.join(screenshot_path, f'screenshot_{idx}.png')
+        pyautogui.screenshot(screenshot_file)
 
-    except Exception as e:
-        print(f"❌ Error sending emoji: {e}")
-        continue
+        # Save label as "screenshot_name, emoji, unicode"
+        f.write(f'{os.path.basename(screenshot_file)}, {emoji}, {unicode_value}\n')
 
-# Locate the input box and send the message
-input_box = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@contenteditable='true']")))
-input_box.send_keys(Keys.ENTER)
-
-print("✅ Emojis sent successfully!")
-
-# Close browser after sending
-time.sleep(3)
-driver.quit()
+print("✅ All emojis sent, labeled, and screenshots saved successfully!")
