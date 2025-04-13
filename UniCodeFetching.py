@@ -5,9 +5,10 @@ import pyperclip
 import webbrowser
 
 # Define paths
-txt_file_path = r"C:\Users\bsame\OneDrive\Desktop\SE\test.txt"
+txt_file_path = r"C:\Users\bsame\OneDrive\Desktop\SE\emoji.txt"
 screenshot_path = r"C:\Users\bsame\OneDrive\Desktop\SE\Screenshots"
 label_file = os.path.join(screenshot_path, 'labels.txt')
+
 # Create folder if it doesn't exist
 if not os.path.exists(screenshot_path):
     os.makedirs(screenshot_path)
