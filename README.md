@@ -86,8 +86,11 @@ docker-compose up --build
    - static/style.css
    - static/script.js
 
+  # these files are important for functioning of code.
+
 5. Start the Flask server:
    python app.py
+
 
 6. Open your web browser and go to:
    http://localhost:5000
