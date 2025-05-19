@@ -66,5 +66,41 @@ docker-compose up --build
 - Create a feature branch.
 - Commit your changes and submit a pull request.
 
+##How to Run the Emoji Detector Web App
+====================================
+
+1. Install Python (if not already installed)
+   - Download from https://www.python.org/downloads/
+
+2. Open a terminal or command prompt in this project folder.
+
+3. Install the required dependencies:
+   pip install -r requirements.txt
+
+4. Make sure these files are present in this folder:
+   - app.py
+   - Model_V2.h5
+   - Label.pkl
+   - requirements.txt
+   - templates/index.html
+   - static/style.css
+   - static/script.js
+
+5. Start the Flask server:
+   python app.py
+
+6. Open your web browser and go to:
+   http://localhost:5000
+
+7. Use the website:
+   - Click "Choose an image" and select an emoji image.
+   - Click "Detect Emoji" to get the unicode prediction.
+   - Copy the unicode if needed, and view your prediction history below.
+
+8. To stop the server:
+   - Go to the terminal where it's running and press Ctrl+C.
+
+If you have any issues, check the terminal for error messages or contact the developer for help.
+
 ## Contact
 Please distrub someone else. I am too busy and outta your reach :)
