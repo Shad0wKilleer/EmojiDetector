@@ -7,30 +7,46 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  <!-- Background animation element -->
   <div class="animated-bg"></div>
+  <!-- Main content container -->
   <main class="container" aria-label="Emoji Detector">
     <h1 class="title">Emoji Detector</h1>
+    <!-- Form for uploading images -->
     <form id="upload-form" enctype="multipart/form-data" aria-label="Upload an image for emoji detection">
+      <!-- Area for dragging and dropping or selecting an image file -->
       <div class="upload-area" id="upload-area" tabindex="0" aria-label="Image upload area">
+        <!-- Hidden file input, triggered by the label -->
         <input type="file" id="file-input" name="file" accept="image/*" aria-label="Choose an image">
+        <!-- Visible label for the file input -->
         <label for="file-input" class="upload-label">Choose an image</label>
+        <!-- Wrapper for the image preview -->
         <div id="preview-wrapper">
+          <!-- Image element to display the selected image preview -->
           <img id="preview" src="#" alt="Image Preview" aria-live="polite">
         </div>
       </div>
+      <!-- Button to submit the form and detect emoji, initially hidden -->
       <button type="submit" id="submit-btn" class="main-btn" style="display:none;">Detect Emoji</button>
     </form>
+    <!-- Loader animation, displayed during processing, initially hidden -->
     <div id="loader" class="loader" aria-live="polite" style="display:none;"></div>
+    <!-- Section to display the detection result -->
     <section class="result-section" aria-live="polite">
+      <!-- Card to display the detected emoji and unicode, initially hidden -->
       <div class="result-card" id="result-card" style="display:none;">
+        <!-- Box containing the unicode of the detected emoji and a copy button -->
         <div class="unicode-box">
           <span id="unicode-label"></span>
           <button id="copy-btn" class="copy-btn" aria-label="Copy unicode">📋</button>
         </div>
+        <!-- Confetti animation element -->
         <div id="confetti"></div>
       </div>
     </section>
+    <!-- Button to reset and try another image, initially hidden -->
     <button id="reset-btn" class="main-btn" style="display:none;">Try another!</button>
+    <!-- Section to display the history of predictions -->
     <section class="history-section" aria-label="Prediction History">
       <h2>Prediction History</h2>
       <ul id="history-list" class="history-list"></ul>
@@ -38,4 +54,4 @@
   </main>
   <script src="/static/script.js"></script>
 </body>
-</html> 
+</html>
