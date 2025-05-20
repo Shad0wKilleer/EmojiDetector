@@ -85,32 +85,32 @@ input[type="file"] {
   max-width: 150px;
   max-height: 150px;
   border-radius: 20px;
-  background: #ffffff88;
-  box-shadow: 0 4px 16px rgba(79,134,247,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 90px;
+  background: #ffffff88; /* Semi-transparent white background */
+  box-shadow: 0 4px 16px rgba(79,134,247,0.25); /* Soft shadow for depth */
+  display: flex; /* Use flexbox for centering content */
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Horizontally center content */
+  min-height: 90px; /* Minimum height for the preview wrapper */
 }
 #preview {
-  max-width: 130px;
-  max-height: 130px;
-  border-radius: 16px;
-  display: none;
-  box-shadow: 0 4px 12px rgba(79,134,247,0.25);
-  animation: fadeIn 0.6s ease-in-out;
+  max-width: 130px; /* Maximum width for the preview image */
+  max-height: 130px; /* Maximum height for the preview image */
+  border-radius: 16px; /* Rounded corners for the preview image */
+  display: none; /* Initially hidden, shown when an image is selected */
+  box-shadow: 0 4px 12px rgba(79,134,247,0.25); /* Soft shadow for the image */
+  animation: fadeIn 0.6s ease-in-out; /* Fade-in animation */
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.9); } /* Start with 0 opacity and slightly scaled down */
+  to { opacity: 1; transform: scale(1); } /* End with full opacity and normal scale */
 }
 
 .main-btn {
-  background: linear-gradient(90deg, #4f86f7 0%, #8ec5fc 100%);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 34px;
+  background: linear-gradient(90deg, #4f86f7 0%, #8ec5fc 100%); /* Gradient background */
+  color: #fff; /* White text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  padding: 14px 34px; /* Padding inside the button */
   font-size: 1.1rem;
   font-weight: 700;
   margin-top: 20px;
